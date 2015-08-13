@@ -7,7 +7,8 @@ rows = [24, 25, 3, 2, 0, 7]
 nrOfLett = 0 #Number of letters
 cursor = 0
 startIndex = 0
-speed = 0.2
+speed = 0.1
+initialSpeed = speed
 elapsed = 0
 
 a = [
@@ -143,13 +144,21 @@ p = [
 	1, 0, 0, 0,
 	1, 0, 0, 0
 ]
+#q = [
+#	0, 1, 0, 0,
+#	1, 0, 1, 0,
+#	1, 0, 1, 0,
+#	1, 0, 1, 0,
+#	0, 1, 1, 0,
+#	0, 0, 0, 1,
+#]
 q = [
-	0, 1, 0, 0,
-	1, 0, 1, 0,
-	1, 0, 1, 0,
-	1, 0, 1, 0,
 	0, 1, 1, 0,
+	1, 0, 0, 1,
 	0, 0, 0, 1,
+	0, 0, 1, 0,
+	0, 0, 1, 0,
+	0, 0, 1, 0
 ]
 r = [
 	1, 1, 1, 0,
@@ -225,7 +234,14 @@ z = [
 	1, 0, 0, 0,
 	1, 1, 1, 1
 ]
-
+_ = [
+    0, 0, 0, 0,
+    1, 0, 0, 1,
+    0, 0, 0, 0,
+    1, 0, 0, 1,
+    0, 1, 1, 0,
+    0, 0, 0, 0
+]
 wiringpi.wiringPiSetup()
 
 for pin in cols:
@@ -275,12 +291,14 @@ while True:
                 wiringpi.digitalWrite(cols[j], 0)
                 wiringpi.digitalWrite(rows[i], 0)
             if wiringpi.millis() - elapsed > speed * 1000:
-                    elapsed += speed * 1000
-                    if startIndex == (length - 11):
-                        startIndex = 0
-                        wiringpi.delay(500)
-                    else:
-                        startIndex += 1
-                    
-        
+                elapsed += speed * 1000
+                if startIndex == length - 11:
+                    startIndex = 0
+                    wiringpi.delay(250)
+                else:
+                    startIndex += 1
+            if startIndex == 0 and  wiringpi.millis() - elapsed > speed * 1000:
+                elapsed += speed * 10000
+            if startIndex == length - 15 and  wiringpi.millis() - elapsed > speed * 1000:
+                elapsed += speed * 10000
         
